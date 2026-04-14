@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>100 Days With Sara 💖</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#0f0f14,#1c1c26);
+  color:#fff;
+  overflow-x:hidden;
+}
+
+/* HERO */
+.hero{
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+.hero h1{
+  font-size:3.5rem;
+}
+
+.hero span{
+  color:#ff4d6d;
+}
+
+.hero p{
+  opacity:0.7;
+}
+
+/* GRID */
+.container{
+  padding:50px 5%;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:20px;
+}
+
+.card{
+  background:rgba(255,255,255,0.05);
+  border-radius:15px;
+  padding:20px;
+  backdrop-filter:blur(10px);
+  cursor:pointer;
+  transition:0.3s;
+  border:1px solid rgba(255,255,255,0.1);
+}
+
+.card:hover{
+  transform:translateY(-10px) scale(1.02);
+  border-color:#ff4d6d;
+}
+
+/* PROGRESS */
+.progress{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:5px;
+  background:#222;
+}
+
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:#ff4d6d;
+}
+
+/* POPUP */
+.popup{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  background:rgba(0,0,0,0.8);
+}
+
+.popup-content{
+  background:#fff;
+  color:#000;
+  padding:30px;
+  border-radius:15px;
+  max-width:500px;
+  width:90%;
+  animation:fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn{
+  from{opacity:0;transform:scale(0.9);}
+  to{opacity:1;transform:scale(1);}
+}
+
+.close{
+  float:right;
+  cursor:pointer;
+}
+
+/* BUTTON */
+.done-btn{
+  margin-top:15px;
+  padding:10px;
+  background:#ff4d6d;
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+/* FINAL LOCK */
+.lock{
+  text-align:center;
+  margin:50px 0;
+  opacity:0.6;
+}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+.hero h1{font-size:2.2rem;}
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+
+<div class="hero">
+<h1>100 Days With <span>Sara 💖</span></h1>
+<p>Every day, I fall for you again.</p>
+</div>
+
+<div class="container">
+<div class="grid" id="grid"></div>
+
+<div class="lock" id="finalMessage">
+<h2>🔒 Complete all days to unlock final surprise</h2>
+</div>
+
+</div>
+
+<div class="popup" id="popup">
+<div class="popup-content">
+<span class="close" onclick="closePopup()">✖</span>
+<h2 id="title"></h2>
+<p id="desc"></p>
+<button class="done-btn" onclick="markDone()">Mark as Done 💖</button>
+</div>
+</div>
+
+<script>
+
+let completed = JSON.parse(localStorage.getItem("done")) || [];
+let currentIndex = null;
+
+function getTask(day){
+
+// UNIQUE TASK LOGIC
+const tasks = [
+
+"Write a paragraph about why you love her",
+"Send her a voice note describing her smile",
+"Ask her about her childhood memory",
+"Watch same movie together",
+"Send random 'I miss you' text at midnight",
+"Write a future plan together",
+"Send her your fav song",
+"Describe your first impression of her",
+"Plan your dream date",
+"Send her a selfie with caption 'Only yours'"
+];
+
+let base = tasks[day % tasks.length];
+
+return `💖 Task:
+${base}
+
+Deep Instructions:
+- Do this with full attention (no distractions)
+- Make her feel special, not routine
+- Add something personal (name, memory, inside joke)
+
+Goal:
+Emotional bonding + trust + connection`;
+}
+
+// RENDER
+const grid = document.getElementById("grid");
+
+for(let i=1;i<=100;i++){
+
+let div = document.createElement("div");
+div.className="card";
+
+div.innerHTML=`
+<h3>Day ${i}</h3>
+<p>${completed.includes(i) ? "✅ Completed" : "Tap to open"}</p>
+`;
+
+div.onclick=()=>openPopup(i);
+
+grid.appendChild(div);
+}
+
+// POPUP
+function openPopup(index){
+currentIndex=index;
+document.getElementById("popup").style.display="flex";
+document.getElementById("title").innerText=`Day ${index}`;
+document.getElementById("desc").innerText=getTask(index);
+}
+
+function closePopup(){
+document.getElementById("popup").style.display="none";
+}
+
+// DONE
+function markDone(){
+if(!completed.includes(currentIndex)){
+completed.push(currentIndex);
+localStorage.setItem("done",JSON.stringify(completed));
+location.reload();
+}
+}
+
+// PROGRESS
+let percent = (completed.length/100)*100;
+document.getElementById("progressBar").style.width = percent+"%";
+
+// FINAL UNLOCK
+if(completed.length === 100){
+document.getElementById("finalMessage").innerHTML = `
+<h2>💖 Sara, you are my forever.</h2>
+<p>No distance can change what I feel for you.</p>
+`;
+}
+
+</script>
+
+</body>
+</html>
